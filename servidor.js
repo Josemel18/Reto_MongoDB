@@ -6,10 +6,10 @@ const PersonSchema = require("./models/person.js")
 
 const app = express();
 const router = express.Router();
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use (express.static ('público'));
+app.use(express.static('público'));
 
 // // Conexion a Base de datos
 
@@ -22,20 +22,57 @@ router.get('/', (req, res) => {
 })
 
 router.get('/person', (req, res) => {
-    PersonSchema.find(function(err, data){
-        if(err){
+    PersonSchema.find(function (err, data) {
+        if (err) {
             console.log(err);
-        }else{
+        } else {
             res.send(data);
         }
 
     })
 })
 
+router.delete('/person/:id', (req, res) => {
+    PersonSchema.findByIdAndRemove(req.params.id, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send("Person successfully remove.");
+        }
+
+    })
+})
+
+router.put('/person/:id', (req, res) => {
+
+    PersonSchema.findByIdAndUpdate(req.params.id, {
+        typeIdPerson: req.body.typeId,
+        idPerson: req.body.id,
+        namePerson: req.body.name,
+        lastnamePerson: req.body.lastname,
+        addressPerson: req.body.address,
+        emailPerson: req.body.email,
+        phonePerson: req.body.phone,
+        cellphonePerson: req.body.cellphone,
+        websitePerson: req.body.website,
+        profilePerson: req.body.profile,
+    },
+
+        function (err) {
+
+            if (err) {
+                console.log(err);
+            } else {
+                res.send("Person successfully update.");
+            }
+
+        })
+
+});
 router.post('/person', (req, res) => {
     let newPerson = new PersonSchema({
         typeIdPerson: req.body.typeId,
-        idPerson:req.body.id,
+        idPerson: req.body.id,
         namePerson: req.body.name,
         lastnamePerson: req.body.lastname,
         addressPerson: req.body.address,
@@ -46,31 +83,15 @@ router.post('/person', (req, res) => {
         profilePerson: req.body.profile,
     });
 
-    newPerson.save(function(err, data){
-        if(err){
+    newPerson.save(function (err, data) {
+        if (err) {
             console.log(err);
-        }else{
+        } else {
             res.send("Person successfully stored.");
         }
     })
 });
 
-router.put('/person /: id', (req, res) => {
-    PersonSchema.findOneAndUpdate({_id: req.params.id}, req.body, function(err, data){
-        
-        PersonSchema.findOne ({_id: req.params.id}, function(data){
-            
-            
-            data.save(function(err, data){
-                if(err){
-                    console.log(err);
-                }else{
-                    res.send("Person successfully update.");
-                }
-            })
-        })
-    });
-});
 
 app.use(router);
 app.listen(3000, () => {
