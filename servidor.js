@@ -69,6 +69,34 @@ router.put('/person/:id', (req, res) => {
         })
 
 });
+
+router.patch('/person/:id', (req, res) => {
+
+    PersonSchema.findByIdAndUpdate(req.params.id, {
+        typeIdPerson: req.body.typeId,
+        idPerson: req.body.id,
+        namePerson: req.body.name,
+        lastnamePerson: req.body.lastname,
+        addressPerson: req.body.address,
+        emailPerson: req.body.email,
+        phonePerson: req.body.phone,
+        cellphonePerson: req.body.cellphone,
+        websitePerson: req.body.website,
+        profilePerson: req.body.profile,
+    },
+
+        function (err) {
+
+            if (err) {
+                console.log(err);
+            } else {
+                res.send("Person successfully update.");
+            }
+
+        })
+
+});
+
 router.post('/person', (req, res) => {
     let newPerson = new PersonSchema({
         typeIdPerson: req.body.typeId,
